@@ -48,21 +48,24 @@ const CallList = ({type}: {
 
     useEffect(() => {
         const fetchRecordings = async () => {
-            try {
-                const callData = await Promise
-                    .all(callRecordings.map((meeting) => meeting.queryRecordings()))
+            if (callRecordings) { // Check if callRecordings is not undefined
+                try {
+                    const callData = await Promise
+                        .all(callRecordings.map((meeting) => meeting.queryRecordings()));
 
-                const recordings = callData.filter(call => call.recordings.length > 0)
-                    .flatMap(call => call.recordings)
+                    const recordings = callData.filter(call => call.recordings.length > 0)
+                        .flatMap(call => call.recordings);
 
-                setRecordings(recordings);
-            } catch (e) {
-                toast({title:'Try again later'})
+                    setRecordings(recordings);
+                } catch (e) {
+                    toast({ title: 'Try again later' });
+                }
             }
+        };
 
-        }
         if (type === 'recordings') fetchRecordings();
     }, [type, callRecordings]);
+
 
 
     const calls = getCalls();
